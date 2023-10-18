@@ -7,6 +7,8 @@ class JournalEntry(models.Model):
     date = models.DateField()
     entry_text = models.TextField()
     # mood, weather
+    def __str__(self) -> str:
+        return self.entry_text
 
 # Feedback Model
 class Feedback(models.Model):

@@ -44,7 +44,7 @@ def login_page(request):
             return redirect('/login')
         else:
             login(request,user)
-            return redirect('/recipes')
+            return redirect('/')
     context = {'page':'Login'}
     return render(request, 'login.html', context)
 
