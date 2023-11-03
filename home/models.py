@@ -16,6 +16,8 @@ class Feedback(models.Model):
     journal_entry = models.ForeignKey(JournalEntry, on_delete=models.CASCADE)
     feedback_text = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    def __str__(self) -> str:
+        return self.feedback_text
 
 # Chatbot Conversation Model (for chat history)
 class ChatbotConversation(models.Model):

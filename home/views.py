@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
+from .nlp import process_description  # Import the function from nlp.py
+
 
 # Create your views here.
 @login_required(login_url="/login")
@@ -18,10 +20,19 @@ def add(request):
         data = request.POST
         desc = data.get('desc')
 
-        JournalEntry.objects.create(
+        feedback = process_description(desc)
+        print(feedback)
+        journal_entry = JournalEntry.objects.create(
             user=request.user,
-            entry_text = desc,
+            entry_text=desc,
             date=date.today(),
+        )
+
+        # Create a Feedback object and associate it with the JournalEntry instance
+        Feedback.objects.create(
+            user=request.user,
+            journal_entry=journal_entry,
+            feedback_text=feedback,
         )
         return redirect('/')
     return render(request, "add.html", context = {'page':'Add Journal'})
