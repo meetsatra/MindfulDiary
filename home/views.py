@@ -11,7 +11,7 @@ from .nlp import process_description  # Import the function from nlp.py
 # Create your views here.
 @login_required(login_url="/login")
 def home(request):
-    journal_entries = JournalEntry.objects.all()
+    journal_entries = JournalEntry.objects.all().order_by('-date')
     return render(request, "index.html", context = {'page':'Home','journal_entries': journal_entries})
 
 @login_required(login_url="/login")
@@ -21,14 +21,13 @@ def add(request):
         desc = data.get('desc')
 
         feedback = process_description(desc)
-        print(feedback)
+        # print(feedback)
         journal_entry = JournalEntry.objects.create(
             user=request.user,
             entry_text=desc,
             date=date.today(),
         )
 
-        # Create a Feedback object and associate it with the JournalEntry instance
         Feedback.objects.create(
             user=request.user,
             journal_entry=journal_entry,
