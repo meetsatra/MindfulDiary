@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 from .nlp import process_description  # Import the function from nlp.py
+from django.shortcuts import redirect, get_object_or_404
 
 
 # Create your views here.
@@ -13,6 +14,11 @@ from .nlp import process_description  # Import the function from nlp.py
 def home(request):
     journal_entries = JournalEntry.objects.all().order_by('-date')
     return render(request, "index.html", context = {'page':'Home','journal_entries': journal_entries})
+
+def delete_entry(request, entry_id):
+    entry = get_object_or_404(JournalEntry, pk=entry_id)
+    entry.delete()
+    return redirect('/')
 
 @login_required(login_url="/login")
 def add(request):

@@ -1,5 +1,9 @@
 body{
     background-color: #e7c8e7;
-    background-image: url();
+    /* background-image: url(); */
 }
 
+div .delete-button a {
+    position: absolute;
+    right: 20px;
+}

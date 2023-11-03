@@ -30,22 +30,25 @@
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for entry in journal_entries %}
         <div class="col">
-          <div class="card h-100">
-            <div class="card-body">
-              <h5 class="card-title">{{ entry.date|date:"d-m-Y" }}</h5>
-              <p class="card-text">{{ entry.entry_text }}</p>
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="delete-button">
+                        <a href="{% url 'delete_entry' entry.id %}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                    </div>
+                    <h5 class="card-title">{{ entry.date|date:"d-m-Y" }}</h5>
+                    <p class="card-text">{{ entry.entry_text }}</p>
+                </div>
+                <div class="card-footer" id="response">
+                    <small class="text-muted">Response:</small>
+                    {% for feedback in entry.feedback_set.all %}
+                    <p>{{ feedback.feedback_text }}</p>
+                    {% endfor %}
+                </div>
             </div>
-            <div class="card-footer" id="response">
-              <small class="text-muted">Response:</small>
-              {% for feedback in entry.feedback_set.all %}
-              <p>{{ feedback.feedback_text }}</p>
-              {% endfor %}
-            </div>
-          </div>
         </div>
         {% endfor %}
     </div>
 </div>
 
-    {% endblock body %}
+{% endblock body %}
 <!-- </div> -->

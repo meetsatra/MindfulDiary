@@ -23,6 +23,7 @@ urlpatterns = [
 
     path('',home, name="home"),
     path('add/',add, name="add"),
+    path('delete_entry/<int:entry_id>/', delete_entry, name='delete_entry'),
 
     path('register/',register, name="register"),
     path('login/',login_page, name="login_page"),
