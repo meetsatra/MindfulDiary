@@ -1,0 +1,67 @@
+{% extends "base.html" %} 
+{% block body %}
+<nav class="navbar navbar-expand-lg bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="/">Mindful Diary</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " aria-current="page" href="/add">Add</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="">Chat</a>
+                </li>
+            </ul>
+            <form class="d-flex" role="search">
+                {% if request.user.is_authenticated %}
+                <p class="my-auto">Welcome, {{request.user.first_name}}
+                    <a style="color: inherit;" href="/logout"><i class="fa fa-sign-out"></i></a></p>
+                {% else %}
+                <a href="/login" class="btn btn-outline-success">Login</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</nav>
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        Chat Room
+                    </div>
+                    <div class="card-body" id="chat-messages">
+                        <!-- Chat messages will be displayed here -->
+                    </div>
+                    <div class="card-footer">
+                        <input type="text" id="message-input" class="form-control" placeholder="Type your message...">
+                        <button onclick="sendMessage()" class="btn btn-primary mt-2">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            var messageInput = document.getElementById('message-input');
+            var message = messageInput.value;
+
+            // Add logic to send the message to the server (Django view) using AJAX or WebSocket
+
+            // For now, let's just display the message in the chat
+            var chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML += '<p>' + message + '</p>';
+
+            // Clear the input field after sending the message
+            messageInput.value = '';
+        }
+    </script>
+{% endblock body %}

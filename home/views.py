@@ -25,8 +25,9 @@ def add(request):
     if request.method == "POST":
         data = request.POST
         desc = data.get('desc')
+        generate_response = data.get('generateResponse') == 'on'
 
-        feedback = process_description(desc)
+        feedback = process_description(desc) if generate_response else ""
         # print(feedback)
         journal_entry = JournalEntry.objects.create(
             user=request.user,
@@ -41,6 +42,11 @@ def add(request):
         )
         return redirect('/')
     return render(request, "add.html", context = {'page':'Add Journal'})
+
+@login_required(login_url="/login")
+def chat(request):
+
+    return render(request, "chat.html", context = {'page':'Chat'})
 
 def login_page(request):
     if request.method == "POST":
@@ -60,7 +66,7 @@ def login_page(request):
             return redirect('/login')
         else:
             login(request,user)
-            return redirect('/')
+            return redirect('/add')
     context = {'page':'Login'}
     return render(request, 'login.html', context)
 
