@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 from .nlp import process_description  # Import the function from nlp.py
 from django.shortcuts import redirect, get_object_or_404
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -45,8 +46,26 @@ def add(request):
 
 @login_required(login_url="/login")
 def chat(request):
+    conversations = ChatbotConversation.objects.all()
+    return render(request, "chat.html", {'page': 'Chat', 'conversations': conversations})
 
-    return render(request, "chat.html", context = {'page':'Chat'})
+# Add a view to handle AJAX requests for sending messages
+@login_required(login_url="/login")
+def send_message(request):
+    if request.method == 'POST':
+        user = request.user
+        message = request.POST.get('message')
+        is_chatbot_message = False  # Assuming user messages are not from the chatbot
+
+        conversation = ChatbotConversation.objects.create(
+            user=user,
+            message=message,
+            is_chatbot_message=is_chatbot_message,
+        )
+
+        return JsonResponse({'status': 'success', 'message': conversation.message})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
 def login_page(request):
     if request.method == "POST":
