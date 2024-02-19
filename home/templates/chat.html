@@ -38,13 +38,15 @@
                     Chat Room
                 </div>
                 <div class="card-body" id="chat-messages">
-                    {% for conversation in conversations %}
-                        {% if conversation.is_chatbot_message %}
-                            <p class="w-100 float-start">{{ conversation.message }}</p>
-                        {% else %}
-                            <p class=" float-end">{{ conversation.message }}</p>
-                        {% endif %}
-                    {% endfor %}
+                    <ul id="message-list" style="list-style-type:none; padding-left:5px">
+                        {% for conversation in conversations %}
+                            {% if conversation.is_chatbot_message %}
+                                <li class="chatbot-message">{{ conversation.message }}</li>
+                            {% else %}
+                                <li class="user-message">{{ conversation.message }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
                 </div>
                 <div class="card-footer">
                     {% csrf_token %}
@@ -60,19 +62,32 @@
     function sendMessage() {
         var messageInput = document.getElementById('message-input');
         var message = messageInput.value;
-
+    
         // Add logic to send the message to the server (Django view) using AJAX
-        // For simplicity, I'm using jQuery for AJAX here
-        $.post("/send_message/", { message: message }, function(response) {
-            if (response.status === 'success') {
-                // Display the sent message in the chat
-                var chatMessages = document.getElementById('chat-messages');
-                chatMessages.innerHTML += '<p>' + response.message + '</p>';
-                
-                // Clear the input field after sending the message
-                messageInput.value = '';
-            } else {
-                alert('Error sending message.');
+        $.ajax({
+            url: "/send_message/",
+            type: "POST",
+            data: {
+                message: message,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response.status === 'success') {
+                    // Display the sent message in the chat
+                    var chatMessages = document.getElementById('chat-messages');
+                    var messageClass = response.is_chatbot ? 'float-start' : 'float-end';
+                    var messageContainer = '<div class="message-container ' + messageClass + '"><p>' + response.message + '</p></div>';
+                    chatMessages.insertAdjacentHTML('afterbegin', messageContainer);
+                    
+                    // Clear the input field after sending the message
+                    messageInput.value = '';
+                } else {
+                    alert('Error sending message.');
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('Error sending message: ' + error);
             }
         });
     }

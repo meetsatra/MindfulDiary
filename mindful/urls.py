@@ -25,6 +25,7 @@ urlpatterns = [
     path('add/',add, name="add"),
     path('chat/',chat, name="chat"),
     path('delete_entry/<int:entry_id>/', delete_entry, name='delete_entry'),
+    path('send_message/', send_message, name='send_message'),
 
     path('register/',register, name="register"),
     path('login/',login_page, name="login_page"),
