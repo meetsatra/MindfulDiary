@@ -9,6 +9,10 @@ from .nlp import process_description  # Import the function from nlp.py
 from django.shortcuts import redirect, get_object_or_404
 from django.http import JsonResponse
 
+from gpt4all import GPT4All
+
+model_path = r"D:\\LLM\\Downloads"
+model_name = "mistral-7b-openorca2.Q4_0.gguf"
 
 # Create your views here.
 @login_required(login_url="/login")
@@ -28,8 +32,13 @@ def add(request):
         desc = data.get('desc')
         generate_response = data.get('generateResponse') == 'on'
 
-        feedback = process_description(desc) if generate_response else ""
-        # print(feedback)
+        model = GPT4All(model_name=model_name, model_path=model_path)
+
+        # feedback = process_description(desc) if generate_response else ""
+        feedback = model.generate(desc, max_tokens=200) if generate_response else ""
+        print(desc)
+        print(feedback)
+
         journal_entry = JournalEntry.objects.create(
             user=request.user,
             entry_text=desc,
